@@ -1,0 +1,5 @@
+Currently Qt4 needs to be installed as qmake ist used for Makefile creation.
+
+Compile with: qmake && make
+
+The binary will be in bin
