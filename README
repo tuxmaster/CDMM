@@ -1,5 +1,6 @@
-Currently Qt4 needs to be installed as qmake ist used for Makefile creation.
+Build:
+cmake -B my_build
+cmake --build --parallel <NumerOfParallelBuilds> my_build
 
-Compile with: qmake && make
-
-The binary will be in bin
+Build requires:
+cmake 3.24 (not tested with older one)
