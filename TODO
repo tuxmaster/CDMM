@@ -4,3 +4,4 @@
 - setRange for VC940 (depending on counts)
 - implementation and documenatation VC870 and PT506
 - Grenzwerte in tabelle aufnehmen 
+- Build for win64
