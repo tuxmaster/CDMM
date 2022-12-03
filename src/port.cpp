@@ -20,6 +20,7 @@
 #include "port.h"
 #ifndef __WIN32
 #include <errno.h>
+#include <unistd.h>
 #endif
 
 Port::Port() :

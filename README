@@ -1,6 +1,7 @@
 Build:
 cmake -B my_build
-cmake --build --parallel <NumerOfParallelBuilds> my_build
+cmake --build my_build --parallel <NumerOfParallelBuilds>
 
 Build requires:
 cmake 3.24 (not tested with older one)
+gcc-c++ 12.2.1 (not tested with olders)

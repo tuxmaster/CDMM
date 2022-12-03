@@ -26,6 +26,10 @@
 
 #include <stdio.h>
 
+#ifndef __WIN32
+	#include <unistd.h>
+#endif
+
 SerialPort::SerialPort() :
   Port()
 {

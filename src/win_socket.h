@@ -27,7 +27,7 @@
 #ifndef SOCKET_H
 #define SOCKET_H
 
-#include <WinSock2.h>
+#include <winsock2.h>
 
 #include <string>
 

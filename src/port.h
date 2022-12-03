@@ -24,6 +24,7 @@
 #include <sstream>
 
 #ifdef __WIN32
+#include <winsock2.h>
 #include <windows.h>
 #endif
 

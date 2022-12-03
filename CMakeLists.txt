@@ -4,19 +4,21 @@ project(cdmm LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-set(CMAKE_AUTOUIC ON)
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
+#set(CMAKE_AUTOUIC ON)
+#set(CMAKE_AUTOMOC ON)
+#set(CMAKE_AUTORCC ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 COMPONENTS Core REQUIRED)
-message(STATUS "Using Qt ${Qt6Core_VERSION}")
+include(GNUInstallDirs)
+
+#find_package(Qt6 COMPONENTS Core REQUIRED)
+#message(STATUS "Using Qt ${Qt6Core_VERSION}")
 
 find_package(Doxygen
-             REQUIRED dot
-             OPTIONAL_COMPONENTS mscgen dia
+	     REQUIRED dot
+	     OPTIONAL_COMPONENTS mscgen dia
 )
 
 if(DOXYGEN_FOUND)
@@ -121,5 +123,11 @@ set(PROJECT_SOURCES
    ${WIN_SOURCES}
 )
 
-qt_add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core)
+set(BIN_TARGET_PATH "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}" CACHE PATH "Target directory for the app" FORCE)
+message(STATUS "Install binary to ${BIN_TARGET_PATH}")
+
+add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
+target_link_libraries(${PROJECT_NAME})
+if(WIN32)
+	target_sources(${PROJECT_NAME} PRIVATE cdmm_resource.rc)
+endif()

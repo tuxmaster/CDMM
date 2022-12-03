@@ -22,6 +22,10 @@
 #include <iostream>
 #include <stdio.h>
 
+#ifndef __WIN32
+	#include <unistd.h>
+#endif
+
 MetexAscii::MetexAscii( const std::string & format,
 						const std::string & overflowStr,
 						bool poll, const std::string & pollString,

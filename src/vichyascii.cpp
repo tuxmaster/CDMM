@@ -21,6 +21,9 @@
 
 #include <iostream>
 #include <stdio.h>
+#ifndef __WIN32
+	#include <unistd.h>
+#endif
 
 VichyAscii::VichyAscii( const std::string & format,
 						const std::string & overflowStr,

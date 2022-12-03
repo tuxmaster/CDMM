@@ -25,7 +25,7 @@
 */
 
 
-#include "Socket.h"
+#include "socket.h"
 #include <iostream>
 
 using namespace std;

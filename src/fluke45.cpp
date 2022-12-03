@@ -23,6 +23,10 @@
 #include <iostream>
 #include <stdio.h>
 
+#ifndef __WIN32
+	#include <unistd.h>
+#endif
+
 Fluke45::Fluke45() :
   DMMClass()
 {

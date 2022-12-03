@@ -21,7 +21,8 @@
 #define SOCKET_HH
 
 #ifdef __WIN32
-#include <WinSock2.h>
+	#include <winsock2.h>
+	#include <windows.h>
 #else
 #include <sys/types.h>
 #include <sys/socket.h>
