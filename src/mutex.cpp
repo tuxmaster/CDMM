@@ -9,15 +9,15 @@
 // License  version 2.0 as published   by the Free Software  Foundation
 // and appearing  in the file LICENSE.GPL included  in the packaging of
 // this file.
-// 
-// This file is provided AS IS with  NO WARRANTY OF ANY KIND, INCLUDING 
-// THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+//
+// This file is provided AS IS with  NO WARRANTY OF ANY KIND, INCLUDING
+// THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR
 // PURPOSE.
 //----------------------------------------------------------------------
 // Copyright 2006 Matthias Toussaint
 //======================================================================
 
-#include <mutex.h>
+#include "mutex.h"
 #include <errno.h>
 
 Mutex::Mutex()
@@ -76,9 +76,9 @@ bool Mutex::isLocked()
 {
 #ifndef __WIN32
   bool locked = (::pthread_mutex_trylock( &m_mutex ) == EBUSY);
-  
+
   if (locked) ::pthread_mutex_unlock( &m_mutex );
-  
+
   return locked;
 #else
   return m_isLocked;

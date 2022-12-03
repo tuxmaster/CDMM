@@ -9,9 +9,9 @@
 // License  version 2.0 as published   by the Free Software  Foundation
 // and appearing  in the file LICENSE.GPL included  in the packaging of
 // this file.
-// 
-// This file is provided AS IS with  NO WARRANTY OF ANY KIND, INCLUDING 
-// THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+//
+// This file is provided AS IS with  NO WARRANTY OF ANY KIND, INCLUDING
+// THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR
 // PURPOSE.
 //----------------------------------------------------------------------
 // Copyright 2011 Matthias Toussaint
@@ -20,12 +20,12 @@
 #ifndef FLUKE45_HH
 #define VC870_HH
 
-#include <dmmclass.h>
-#include <serialport.h>
+#include "dmmclass.h"
+#include "serialport.h"
 
 /** \brief VC870 14 byte binary protocoll
-  
- */ 
+
+ */
 class Fluke45 : public DMMClass
 {
 public:
@@ -33,11 +33,11 @@ public:
    */
   Fluke45();
   virtual ~Fluke45();
-  
+
   virtual Port::Error close();
-  
+
   static DMMClass *create() { return new Fluke45; }
-  
+
 protected:
   SerialPort  m_port;
   std::string m_rate;
@@ -48,12 +48,12 @@ protected:
 
   virtual Port::Error open_impl( const std::string & config );
   virtual void run();
-  
+
   Port::Error readData( std::string & );
   bool findOverflow( const char *byte );
   void checkRange( const std::string & range, int index );
   void checkFunc( const std::string & func, int index );
-  
+
 };
 
 #endif // FLUKE45_HH

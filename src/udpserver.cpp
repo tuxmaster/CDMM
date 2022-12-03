@@ -1,6 +1,6 @@
 //======================================================================
 // File:        udpserver.cpp
-// Author:      Mark Sheahan 
+// Author:      Mark Sheahan
 // Created:     Thu Jan 26 22:03:33 EST 2012
 // Project:     QtDMM
 // Description: Encapsulates a threaded udp server
@@ -9,17 +9,17 @@
 // License  version 2.0 as published   by the Free Software  Foundation
 // and appearing  in the file LICENSE.GPL included  in the packaging of
 // this file.
-// 
-// This file is provided AS IS with  NO WARRANTY OF ANY KIND, INCLUDING 
-// THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+//
+// This file is provided AS IS with  NO WARRANTY OF ANY KIND, INCLUDING
+// THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR
 // PURPOSE.
 //----------------------------------------------------------------------
-// Copyright 2012 Mark Sheahan 
+// Copyright 2012 Mark Sheahan
 //======================================================================
 
-#include <udpserver.h>
+#include "udpserver.h"
 #include <iostream>
-#include <util.h>
+#include "util.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
@@ -31,21 +31,21 @@ UdpServer::UdpServer( DMMClass *dmm, int port ) :
 {
 	// open a socket on port
 	struct sockaddr_in saddr_in;
-        socklen_t socklen = sizeof(struct sockaddr_in);
-        memset(&saddr_in, 0, socklen);
-        saddr_in.sin_family = AF_INET;
-        saddr_in.sin_addr.s_addr = INADDR_ANY;
-        saddr_in.sin_port = htons(port);
-        int errors = 0;
-        if (!errors && (m_socket_fd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
-                fprintf(stderr, "%s Error opening socket: %d %s\n", __FUNCTION__, errno, strerror(errno));
-                errors = 1;
-        }
+		socklen_t socklen = sizeof(struct sockaddr_in);
+		memset(&saddr_in, 0, socklen);
+		saddr_in.sin_family = AF_INET;
+		saddr_in.sin_addr.s_addr = INADDR_ANY;
+		saddr_in.sin_port = htons(port);
+		int errors = 0;
+		if (!errors && (m_socket_fd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
+				fprintf(stderr, "%s Error opening socket: %d %s\n", __FUNCTION__, errno, strerror(errno));
+				errors = 1;
+		}
 
 	if (!errors && bind(m_socket_fd, (struct sockaddr*)&saddr_in, socklen) < 0) {
 		fprintf(stderr, "%s Error binding socket: %d %s\n", __FUNCTION__, errno, strerror(errno));
 		errors = 1;
-	}	
+	}
 }
 
 UdpServer::~UdpServer()
@@ -56,7 +56,7 @@ UdpServer::~UdpServer()
 
 void UdpServer::run()
 {
-	try 
+	try
 	{
 		while (m_run)
 		{
@@ -82,7 +82,7 @@ void UdpServer::run()
 				if (ret < 0) {
 					fprintf(stderr, "Error calling sendto: %d %s\n", errno, strerror(errno));
 				}
-			}			
+			}
 		}
 	}
 	catch (...)

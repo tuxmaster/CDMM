@@ -36,6 +36,7 @@ if(DOXYGEN_FOUND)
 endif()
 
 set(CPP_HEADER
+  src/configuration.h
   src/dmmclass.h
   src/escort97.h
   src/fluke45.h
@@ -70,6 +71,7 @@ set(CPP_HEADER
   src/vichyascii.h
 )
 set(CPP_SOURCES
+  src/configuration.cpp
   src/dmmclass.cpp
   src/escort97.cpp
   src/fluke45.cpp

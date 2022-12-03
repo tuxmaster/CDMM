@@ -9,15 +9,15 @@
 // License  version 2.0 as published   by the Free Software  Foundation
 // and appearing  in the file LICENSE.GPL included  in the packaging of
 // this file.
-// 
-// This file is provided AS IS with  NO WARRANTY OF ANY KIND, INCLUDING 
-// THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+//
+// This file is provided AS IS with  NO WARRANTY OF ANY KIND, INCLUDING
+// THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR
 // PURPOSE.
 //----------------------------------------------------------------------
 // Copyright 2006 Matthias Toussaint
 //======================================================================
 
-#include <escort97.h>
+#include "escort97.h"
 
 #include <iostream>
 
@@ -45,11 +45,11 @@ Port::Error Escort97::close()
 void Escort97::run()
 {
   unsigned char data[128];
-  
+
   while (m_run)
   {
-    int cnt = readData( &m_port, (unsigned char *)data, 
-                         0x00, 21, 127 );
+	int cnt = readData( &m_port, (unsigned char *)data,
+						 0x00, 21, 127 );
 
   }
 }
@@ -57,39 +57,39 @@ void Escort97::run()
 std::string Escort97::byteToDigit( unsigned char byte )
 {
   std::string retval;
-  
+
   switch (byte)
   {
-    case 0x20:
-      retval = "0";
-      break;
-    case 0x21:
-      retval = "1";
-      break;
-    case 0x22:
-      retval = "2";
-      break;
-    case 0x23:
-      retval = "3";
-      break;
-    case 0x24:
-      retval = "4";
-      break;
-    case 0x25:
-      retval = "5";
-      break;
-    case 0x26:
-      retval = "6";
-      break;
-    case 0x27:
-      retval = "7";
-      break;
-    case 0x28:
-      retval = "8";
-      break;
-    case 0x2a:
-      retval = "9";
-      break;
+	case 0x20:
+	  retval = "0";
+	  break;
+	case 0x21:
+	  retval = "1";
+	  break;
+	case 0x22:
+	  retval = "2";
+	  break;
+	case 0x23:
+	  retval = "3";
+	  break;
+	case 0x24:
+	  retval = "4";
+	  break;
+	case 0x25:
+	  retval = "5";
+	  break;
+	case 0x26:
+	  retval = "6";
+	  break;
+	case 0x27:
+	  retval = "7";
+	  break;
+	case 0x28:
+	  retval = "8";
+	  break;
+	case 0x2a:
+	  retval = "9";
+	  break;
   }
 
   return retval;

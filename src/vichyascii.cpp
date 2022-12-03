@@ -9,23 +9,23 @@
 // License  version 2.0 as published   by the Free Software  Foundation
 // and appearing  in the file LICENSE.GPL included  in the packaging of
 // this file.
-// 
-// This file is provided AS IS with  NO WARRANTY OF ANY KIND, INCLUDING 
-// THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+//
+// This file is provided AS IS with  NO WARRANTY OF ANY KIND, INCLUDING
+// THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR
 // PURPOSE.
 //----------------------------------------------------------------------
 // Copyright 2007 John Sheahan
 //======================================================================
 
-#include <vichyascii.h>
+#include "vichyascii.h"
 
 #include <iostream>
 #include <stdio.h>
 
 VichyAscii::VichyAscii( const std::string & format,
-                        const std::string & overflowStr,
-                        bool poll, const std::string & pollString, 
-                        int pollTime ) :
+						const std::string & overflowStr,
+						bool poll, const std::string & pollString,
+						int pollTime ) :
   DMMClass(),
   m_overflowStr( overflowStr ),
   m_poll( poll ),
@@ -37,52 +37,52 @@ VichyAscii::VichyAscii( const std::string & format,
   int byte = 0;
   m_length = format.size();
   m_syncByte = format[m_length-1];
-  
+
   int *start=0;
   int *len=0;
-  
+
   for (int i=0; i<m_length; ++i)
   {
-    if (byte != format[i])
-    {
-      if (len)
-      {
-        *len = i-(*start);
-      }
-      
-      if (format[i] == 'M')
-      {
-        start = &m_modeStart;
-        len   = &m_modeLen;
-      }
-      else if (format[i] == 'V')
-      {
-        start = &m_valueStart;
-        len   = &m_valueLen;
-      }
-      else if (format[i] == 'U')
-      {
-        start = &m_unitStart;
-        len   = &m_unitLen;
-      }
-      else if (format[i] == 'X')
-      {
-        start = &m_csumStart;
-        len   = &m_csumLen;
-      }
-      else 
-      {
-        start = 0;
-        len = 0;
-      }
-      
-      if (start) 
-      {
-        *start = i;
-      }
-      
-      byte = format[i];
-    }
+	if (byte != format[i])
+	{
+	  if (len)
+	  {
+		*len = i-(*start);
+	  }
+
+	  if (format[i] == 'M')
+	  {
+		start = &m_modeStart;
+		len   = &m_modeLen;
+	  }
+	  else if (format[i] == 'V')
+	  {
+		start = &m_valueStart;
+		len   = &m_valueLen;
+	  }
+	  else if (format[i] == 'U')
+	  {
+		start = &m_unitStart;
+		len   = &m_unitLen;
+	  }
+	  else if (format[i] == 'X')
+	  {
+		start = &m_csumStart;
+		len   = &m_csumLen;
+	  }
+	  else
+	  {
+		start = 0;
+		len = 0;
+	  }
+
+	  if (start)
+	  {
+		*start = i;
+	  }
+
+	  byte = format[i];
+	}
   }
 }
 
@@ -104,28 +104,28 @@ Port::Error VichyAscii::close()
 //void VichyAscii::setVichyAscii( const std::string & str, int index )
 //{
 //  m_mutex.lock();
-//      
+//
 //  setValue( index, Util::strip_whitespace( str.substr( m_valueStart, m_valueLen )) );
-//  m_mode[index] = Util::strip_whitespace( str.substr( m_modeStart, m_modeLen ));      
+//  m_mode[index] = Util::strip_whitespace( str.substr( m_modeStart, m_modeLen ));
 //  m_unit[index] = Util::strip_whitespace( str.substr( m_unitStart, m_unitLen ));
-//      
+//
 //  m_hasValue = true;
 //  if (str.substr(m_valueStart,m_valueLen).find(m_overflowStr)<(unsigned)m_valueLen)
 //  {
 //    m_overflow[index]=true;
 //  }
 //  else m_overflow[index]=false;
-//      
-//  m_mutex.unlock(); 
+//
+//  m_mutex.unlock();
 //}
 //
 //char hexmap (char in)
 //{
-//  if (in <= 0x09) 
-//	{ 
+//  if (in <= 0x09)
+//	{
 //	  return in + '0';
 //	}
-//  else 
+//  else
 //	{  return in + 'A' - 10;
 //	}
 //}
@@ -133,19 +133,19 @@ void VichyAscii::run()
 {
   char data[64];
   m_hasValue = false;
-  
+
   while (m_run)
 	{
 	  if (m_poll)
 		{
 		  m_port.writeString( m_pollString.c_str(), m_pollString.size() );
 		}
-	  
+
 	  for (int i=0; i<m_numValues; ++i)
 		{
-		  int cnt = readData( &m_port, (unsigned char *)data, 
+		  int cnt = readData( &m_port, (unsigned char *)data,
 							  m_syncByte, m_length, 3*m_length );
-		  
+
 		  bool mapped = false;
 		  if (-1 != cnt)
 			{
@@ -153,20 +153,20 @@ void VichyAscii::run()
 			  data[cnt-1] = 0;
 			  std::string strData = data+start;
 			  char *byte = data+cnt-11;
-			  
+
 			  //std::cerr << strData << std::endl;
-			  
+
 			  //        setVichyAscii( strData, i );
 			  m_mutex.lock();
-			  
+
 			  // assemble value display
 			  std::string digits;
 			  digits = ' ';
 
-			  if (byte[3] == 0x50) 
+			  if (byte[3] == 0x50)
 				{ digits += '-';
 				}
-			  else 
+			  else
 				{
 				  digits += ' ';
 				}
@@ -176,12 +176,12 @@ void VichyAscii::run()
 			  digits += (char)(byte[6]);
 			  digits += (char)(byte[7]);
 			  digits += (char)(byte[8]);
-	
+
 			  // double d_val;
 			  // Util::fromString( &d_val, digits );
 			  // printf("string made %f\n", d_val);
 			  // std::cout << digits;
-			  
+
 			  // setValue( 0, digits );
 			  unsigned char ubyte_0 = byte[0];
 			  unsigned char ubyte_1 = byte[1];
@@ -189,21 +189,21 @@ void VichyAscii::run()
 			  std::string local_mode = "";
 			  std::string local_unit = "";
 			  // printf(" first two bytes are %d %x %u %d %x\n", ubyte_0, ubyte_0, ubyte_0, ubyte_1, ubyte_1);
-			  
+
 			  // setValue( i, Util::strip_whitespace( strData.substr( m_valueStart, m_valueLen )) );
-			  // m_mode[i] = Util::strip_whitespace( strData.substr( m_modeStart, m_modeLen ));      
+			  // m_mode[i] = Util::strip_whitespace( strData.substr( m_modeStart, m_modeLen ));
 			  //m_unit[i] = Util::strip_whitespace( strData.substr( m_unitStart, m_unitLen ));
 			  switch (ubyte_0)
 				{
 				  case 0xe8:
 				  local_unit = "mV";
 					// case -0x18:
-					if ((ubyte_1 & 0x40 ) == 0x40) 
+					if ((ubyte_1 & 0x40 ) == 0x40)
 					  {
 						local_mode = "auto";
 					  }
 					ubyte_1a = ubyte_1 & 0xbf ; // ignore auto bit
-					switch (ubyte_1a) 
+					switch (ubyte_1a)
 					{
 					case 0x80:
 					  digits = insertDecimalPoint( digits, 4);
@@ -221,15 +221,15 @@ void VichyAscii::run()
 					  digits = insertDecimalPoint( digits, 7);
 					  mapped = true;
 					  break;
-					default : 
+					default :
 					  digits = insertDecimalPoint( digits, 4);
-					  
+
 					}
 				  break;
 				case 0xf0:
 				  local_unit = "V";
 				  local_mode = "";
-				  if ((ubyte_1 & 0x40 ) == 0x40) 
+				  if ((ubyte_1 & 0x40 ) == 0x40)
 					{
 					  local_mode = "auto";
 					}
@@ -257,7 +257,7 @@ void VichyAscii::run()
 				case 0xb0:
 				  local_unit = "mA";
 				  local_mode = "";
-				  if ((ubyte_1 & 0x40 ) == 0x40) 
+				  if ((ubyte_1 & 0x40 ) == 0x40)
 					{
 					  local_mode = "auto";
 					}
@@ -288,7 +288,7 @@ void VichyAscii::run()
 				case 0xa8:
 				  local_unit = "A";
 				  local_mode = "";
-				  if ((ubyte_1 & 0x40 ) == 0x40) 
+				  if ((ubyte_1 & 0x40 ) == 0x40)
 					{
 					  local_mode = "auto";
 					}
@@ -325,11 +325,11 @@ void VichyAscii::run()
 				case 0xd0:
 				  local_unit = "Hz";
 				  break;
-				  
+
 				  // default :
 				}
-			  
-			  if (mapped) 
+
+			  if (mapped)
 				{
 				  m_mode[0] = local_mode;
 				  m_unit[0] = local_unit;
@@ -338,8 +338,8 @@ void VichyAscii::run()
 				  m_lastValueTime = time(0);
 				  // printf("mapped\n");
 				}
-			  // else 
-			  //	{ 
+			  // else
+			  //	{
 			  //	  printf("Not mapped\n");
 			  //	}
 			  //	if (strData.substr(m_valueStart,m_valueLen).find(m_overflowStr)<(unsigned)m_valueLen)
@@ -347,13 +347,13 @@ void VichyAscii::run()
 			  //	m_overflow[i]=true;
 			  // }
 			  //else m_overflow[i]=false;
-	
-			  m_mutex.unlock(); 
-	
+
+			  m_mutex.unlock();
+
 			}
 		  else m_hasValue = false;
 		}
-    
+
 	  usleep(m_pollTime);
 	}
 }

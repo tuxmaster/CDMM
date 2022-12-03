@@ -9,40 +9,40 @@
 // License  version 2.0 as published   by the Free Software  Foundation
 // and appearing  in the file LICENSE.GPL included  in the packaging of
 // this file.
-// 
-// This file is provided AS IS with  NO WARRANTY OF ANY KIND, INCLUDING 
-// THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+//
+// This file is provided AS IS with  NO WARRANTY OF ANY KIND, INCLUDING
+// THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR
 // PURPOSE.
 //----------------------------------------------------------------------
 // Copyright 2006 Matthias Toussaint
 //======================================================================
 
 #include <vector>
-#include <dmmclass.h>
-#include <metex14bytespolling.h>
-#include <metex14bytescontinuous.h>
-#include <metex15bytescontinuous.h>
-#include <m9803r.h>
-#include <peaktech10ascii.h>
-#include <iocbuvmonitor.h>
-#include <gdm703.h>
-#include <escort97.h>
-#include <qm1537.h>
-#include <vc820.h>
-#include <vc870.h>
-#include <vc940.h>
-#include <idm73.h>
-#include <pt506.h>
-#include <fluke45.h>
-#include <logger.h>
-#include <vichy12bytepolling.h>
+#include "dmmclass.h"
+#include "metex14bytespolling.h"
+#include "metex14bytescontinuous.h"
+#include "metex15bytescontinuous.h"
+#include "m9803r.h"
+#include "peaktech10ascii.h"
+#include "iocbuvmonitor.h"
+#include "gdm703.h"
+#include "escort97.h"
+#include "qm1537.h"
+#include "vc820.h"
+#include "vc870.h"
+#include "vc940.h"
+#include "idm73.h"
+#include "pt506.h"
+#include "fluke45.h"
+#include "logger.h"
+#include "vichy12bytepolling.h"
 #include <stdio.h>
 
 #include <iostream>
 
 // list of all known protocols
 // just add new lines in any order
-DMMClass::Protocol DMMClass::s_protocol[] = 
+DMMClass::Protocol DMMClass::s_protocol[] =
 {
   Protocol( &Metex14BytesPolling::create, "M14P", "Metex 14 bytes, ASCII, polling" ),
   Protocol( &Metex14BytesContinuous::create, "M14C", "Metex 14 bytes, ASCII" ),
@@ -62,9 +62,9 @@ DMMClass::Protocol DMMClass::s_protocol[] =
   Protocol( &Logger::create, "Logger", "Generic for logging" ),
   Protocol( &Vichy12BytePolling::create, "V12P", "Vichy 12 bytes, ASCII, polling" ),
   // end of list
-  Protocol( 0, "", "" ) 
+  Protocol( 0, "", "" )
 };
-  
+
 // The precompiled device list
 // just add new lines in alphabetical order
 DMMClass::Device DMMClass::s_device[] =
@@ -106,7 +106,7 @@ DMMClass::Device DMMClass::s_device[] =
   Device( "Metex", "ME-42", "M14P", "600:7:n:2:DSR:DTR:CTS", 1, 4000, 1000, 750, 10, 10, -50, 250 ),
   Device( "Metex", "Universal System 9140", "M14P", "1200:7:n:2:DSR:DTR:CTS", 1, 4000, 1000, 750, 10, 10, -50, 250 ),
   Device( "Metex", "Universal System 9160", "M14P", "1200:7:n:2:DSR:DTR:CTS", 1, 4000, 1000, 750, 10, 10, -50, 250 ),
-  // 
+  //
   Device( "Metrel", "MD9015", "VC820", "2400:8:n:1:DSR:DTR", 1, 4000, 1000, 750, 10, 10, -50, 250 ),
   //
   Device( "PeakTech", "3330", "VC820", "2400:8:n:1:DSR:DTR", 1, 4000, 1000, 750, 10, 10, -50, 250 ),
@@ -199,14 +199,14 @@ Port::Error DMMClass::open( const std::string & config )
 {
   // give it some time on startup
   m_lastValueTime = m_openTime = time(0);
-  
+
   return open_impl( config );
 }
 
 bool DMMClass::timeout(int timeout_val) const
 {
   if (!m_hasValue && (time(0)-m_lastValueTime)>timeout_val) return true;
-  
+
   return false;
 }
 
@@ -235,56 +235,56 @@ void DMMClass::setValue( int index, std::string value )
 
 std::string DMMClass::value( int index )
 {
-  MutexLocker lock( &m_mutex );  
+  MutexLocker lock( &m_mutex );
   return m_value[index];
 }
 
 double DMMClass::minValue( int index )
 {
-  MutexLocker lock( &m_mutex );  
+  MutexLocker lock( &m_mutex );
   return m_rangeMin[index];
 }
 
 double DMMClass::maxValue( int index )
 {
-  MutexLocker lock( &m_mutex );  
+  MutexLocker lock( &m_mutex );
   return m_rangeMax[index];
 }
 
 double DMMClass::realValue( int index )
 {
-  MutexLocker lock( &m_mutex );  
+  MutexLocker lock( &m_mutex );
   return m_realValue[index];
 }
 
-int DMMClass::readData( Port *port, unsigned char *buffer, 
-                        int syncByte, int minLen, int maxLen, int timeo )
+int DMMClass::readData( Port *port, unsigned char *buffer,
+						int syncByte, int minLen, int maxLen, int timeo )
 {
   int cnt=0;
   int byte;
-  
+
   timeo *= 10;
-  
+
   do
   {
-    if (m_consoleLogging && m_logPollSize)
-    {
-      port->writeString( (char *)m_logPollSequence, m_logPollSize );
-    }
-    
-    if (port->readByte( &byte, timeo ) != Port::Ok) return -1;
-    
-    buffer[cnt++] = byte;
-    
-    if (m_consoleLogging) writeLog( byte );
-    
-    if (byte == syncByte && cnt >= minLen) 
-    {
-      return cnt;
-    }
+	if (m_consoleLogging && m_logPollSize)
+	{
+	  port->writeString( (char *)m_logPollSequence, m_logPollSize );
+	}
+
+	if (port->readByte( &byte, timeo ) != Port::Ok) return -1;
+
+	buffer[cnt++] = byte;
+
+	if (m_consoleLogging) writeLog( byte );
+
+	if (byte == syncByte && cnt >= minLen)
+	{
+	  return cnt;
+	}
   }
   while (cnt < maxLen && byte != syncByte);
-  
+
   return -1;
 }
 
@@ -292,168 +292,168 @@ DMMClass *DMMClass::create_protocol( std::string protocolName )
 {
   for (int i=0; i<DMMClass::num_protocols(); ++i)
   {
-    if (s_protocol[i].name == protocolName)
-    {
-      return s_protocol[i].createFunction();
-    }
+	if (s_protocol[i].name == protocolName)
+	{
+	  return s_protocol[i].createFunction();
+	}
   }
-  
+
   return 0;
 }
 
 int DMMClass::num_protocols()
 {
   static int cnt = count_protocols();
-  
+
   return cnt;
 }
 
 int DMMClass::count_protocols()
 {
   int cnt=0;
-  
+
   while (s_protocol[cnt].createFunction) cnt++;
-  
+
   return cnt;
 }
 
 std::string DMMClass::print_protocols()
 {
-  std::string table; 
+  std::string table;
   std::stringstream ss( table );
-  
+
   int cnt=0;
-  while (s_protocol[cnt].createFunction) 
+  while (s_protocol[cnt].createFunction)
   {
-    ss << s_protocol[cnt].name
-       << ": " << s_protocol[cnt].menuText << "\n";
-    cnt++;
+	ss << s_protocol[cnt].name
+	   << ": " << s_protocol[cnt].menuText << "\n";
+	cnt++;
   }
-  
+
   return ss.str();
 }
 
 std::string DMMClass::print_devices()
 {
-  std::string table; 
+  std::string table;
   std::stringstream ss( table );
-  
+
   int cnt=0;
-  while (s_device[cnt].numValues) 
+  while (s_device[cnt].numValues)
   {
-    ss << s_device[cnt].brand
-       << " " << s_device[cnt].name << "\n";
-    cnt++;
+	ss << s_device[cnt].brand
+	   << " " << s_device[cnt].name << "\n";
+	cnt++;
   }
-  
+
   return ss.str();
 }
 
 bool DMMClass::has_device( const std::string & deviceName )
 {
   int cnt=0;
-  
-  while (s_device[cnt].numValues) 
+
+  while (s_device[cnt].numValues)
   {
-    std::string name = s_device[cnt].brand;
-    name += " ";
-    name += s_device[cnt].name;
-    
-    if (name == deviceName) return true;
-    cnt++;
+	std::string name = s_device[cnt].brand;
+	name += " ";
+	name += s_device[cnt].name;
+
+	if (name == deviceName) return true;
+	cnt++;
   }
-  
+
   return false;
 }
 
-DMMClass::Device 
+DMMClass::Device
 DMMClass::get_device( const std::string & deviceName )
 {
   int cnt=0;
-  
-  while (s_device[cnt].numValues) 
+
+  while (s_device[cnt].numValues)
   {
-    std::string name = s_device[cnt].brand;
-    name += " ";
-    name += s_device[cnt].name;
-    
-    if (name == deviceName) return s_device[cnt];
-    cnt++;
+	std::string name = s_device[cnt].brand;
+	name += " ";
+	name += s_device[cnt].name;
+
+	if (name == deviceName) return s_device[cnt];
+	cnt++;
   }
-  
+
   return s_device[cnt];
 }
 
 std::string DMMClass::device_table()
 {
-  std::string table; 
+  std::string table;
   std::stringstream ss( table );
-  
+
   int cnt=0;
-  
-  while (s_device[cnt].numValues) 
+
+  while (s_device[cnt].numValues)
   {
-    ss << s_device[cnt].brand;
-    ss << ", ";
-    ss << s_device[cnt].name;
-    ss << ", ";
-    TokenList tokenList;
-    std::string argument = s_device[cnt].port;
-    std::string token;
-      
-    for (unsigned i=0; i<argument.size(); ++i)
-    {
-      if (argument[i] != ':')
-      {
-        token += argument[i];
-      }
-      else
-      {
-        tokenList.push_back( token );
-        token = "";
-      }
-    }
-    if (token.size()) tokenList.push_back( token );
-    
-    ss << tokenList[0];
-    ss << ", ";
-    ss << tokenList[1] + tokenList[2] + tokenList[3];
-    ss << ", ";
-    
-    if (tokenList.size() > 4)
-    {
-      for (unsigned i=4; i<tokenList.size(); ++i)
-      {
-        if (i>4) ss << " ";
-        ss << tokenList[i];
-      }
-    }
-    else ss << ", ";
-    
-    ss << ", ";
-    ss << s_device[cnt].numCounts;
-    ss << ", ";
-    ss << s_device[cnt].numValues;
-    ss << ", ";
-    ss << s_device[cnt].maxVdc;
-    ss << ", ";
-    ss << s_device[cnt].maxVac;
-    ss << ", ";
-    ss << s_device[cnt].maxAdc;
-    ss << ", ";
-    ss << s_device[cnt].maxAac;
-    ss << ", ";
-    ss << s_device[cnt].minTemp;
-    ss << ", ";
-    ss << s_device[cnt].maxTemp;
-    ss << ", ";
-    
-    ss << s_device[cnt].protocol;
-    ss << "\n";
-    
-    cnt++;
+	ss << s_device[cnt].brand;
+	ss << ", ";
+	ss << s_device[cnt].name;
+	ss << ", ";
+	TokenList tokenList;
+	std::string argument = s_device[cnt].port;
+	std::string token;
+
+	for (unsigned i=0; i<argument.size(); ++i)
+	{
+	  if (argument[i] != ':')
+	  {
+		token += argument[i];
+	  }
+	  else
+	  {
+		tokenList.push_back( token );
+		token = "";
+	  }
+	}
+	if (token.size()) tokenList.push_back( token );
+
+	ss << tokenList[0];
+	ss << ", ";
+	ss << tokenList[1] + tokenList[2] + tokenList[3];
+	ss << ", ";
+
+	if (tokenList.size() > 4)
+	{
+	  for (unsigned i=4; i<tokenList.size(); ++i)
+	  {
+		if (i>4) ss << " ";
+		ss << tokenList[i];
+	  }
+	}
+	else ss << ", ";
+
+	ss << ", ";
+	ss << s_device[cnt].numCounts;
+	ss << ", ";
+	ss << s_device[cnt].numValues;
+	ss << ", ";
+	ss << s_device[cnt].maxVdc;
+	ss << ", ";
+	ss << s_device[cnt].maxVac;
+	ss << ", ";
+	ss << s_device[cnt].maxAdc;
+	ss << ", ";
+	ss << s_device[cnt].maxAac;
+	ss << ", ";
+	ss << s_device[cnt].minTemp;
+	ss << ", ";
+	ss << s_device[cnt].maxTemp;
+	ss << ", ";
+
+	ss << s_device[cnt].protocol;
+	ss << "\n";
+
+	cnt++;
   }
-  
+
   return ss.str();
 }
 
@@ -461,103 +461,103 @@ std::string DMMClass::insertDecimalPoint( const std::string & string, int pos )
 {
   if (string[0] == '-')
   {
-    pos++;
+	pos++;
   }
-  
-  return string.substr( 0, pos ) + "." + 
-         string.substr( pos, string.size()-pos );
+
+  return string.substr( 0, pos ) + "." +
+		 string.substr( pos, string.size()-pos );
 }
 
 void DMMClass::setConsoleLoggingSyncSequence( const std::string & sync_sequence )
-{ 
+{
   m_logSyncSize = 0;
   m_logSyncCount = 0;
   TokenList token = Util::tokenize( sync_sequence, "," );
   for (unsigned i=0; i<token.size(); ++i)
   {
-    m_logSyncSequence[m_logSyncSize++] = token2Byte(Util::strip_whitespace(token[i]));
+	m_logSyncSequence[m_logSyncSize++] = token2Byte(Util::strip_whitespace(token[i]));
   }
 }
 
 void DMMClass::setConsoleLoggingPollSequence( const std::string & poll_sequence )
-{ 
+{
   m_logPollSize = 0;
   TokenList token = Util::tokenize( poll_sequence, "," );
   for (unsigned i=0; i<token.size(); ++i)
   {
-    m_logPollSequence[m_logPollSize++] = token2Byte(Util::strip_whitespace(token[i]));
+	m_logPollSequence[m_logPollSize++] = token2Byte(Util::strip_whitespace(token[i]));
   }
 }
 
 unsigned char DMMClass::token2Byte( const std::string & token ) const
 {
   int retval = 0;
-  
+
   if (token[0] == '\\')
   {
-    if (token.size()==2)                          // escape
-    {
-      if (token[1] == 'n')      retval = '\n';
-      else if (token[1] == 'r') retval = '\r';
-      else if (token[1] == 't') retval = '\t';
-      else if (token[1] == ',') retval = ',';
-    }
-    else if (token.size()==4)                     // octal
-    {
-      std::stringstream sstr(token.substr(1,3));
-      sstr >> std::oct >> retval;
-    }
+	if (token.size()==2)                          // escape
+	{
+	  if (token[1] == 'n')      retval = '\n';
+	  else if (token[1] == 'r') retval = '\r';
+	  else if (token[1] == 't') retval = '\t';
+	  else if (token[1] == ',') retval = ',';
+	}
+	else if (token.size()==4)                     // octal
+	{
+	  std::stringstream sstr(token.substr(1,3));
+	  sstr >> std::oct >> retval;
+	}
   }
   else if (isascii(token[0]) && token.size()==1)   // character
   {
-    retval = token[0];
+	retval = token[0];
   }
   else if (token.substr(0,2)=="0x")   // hexnumber
   {
-    std::stringstream sstr(token);
-    sstr >> std::hex >> retval;
+	std::stringstream sstr(token);
+	sstr >> std::hex >> retval;
   }
-  
+
   return retval;
 }
 
 void DMMClass::writeLog( unsigned char byte )
 {
   m_logBuffer[m_logCount++] = byte;
-  
+
   if (byte > 0x20 && isascii(byte))// && byte != '\n' && byte != '\r' && byte != '\t')
   {
-    printf( "%c ", byte );
+	printf( "%c ", byte );
   }
   else if (byte == '\n')
   {
-    printf( "\\n" );
+	printf( "\\n" );
   }
   else if (byte == '\r')
   {
-    printf( "\\r" );
+	printf( "\\r" );
   }
   else if (byte == '\t')
   {
-    printf( "\\t" );
+	printf( "\\t" );
   }
   else
   {
-    printf( "  " );
+	printf( "  " );
   }
-  
+
   if (m_logSyncCount < m_logSyncSize)
   {
-    if (m_logSyncSequence[m_logSyncCount] == byte) m_logSyncCount++;
+	if (m_logSyncSequence[m_logSyncCount] == byte) m_logSyncCount++;
   }
-  
+
   if ((m_logSyncCount && m_logSyncCount == m_logSyncSize) || m_logCount == 16)
   {
-    printf( "  " );
-    for (int i=0; i<m_logCount; ++i) printf( "%02X ", m_logBuffer[i] );
-    printf( " : %d bytes\n", m_logCount );
-    m_logCount = 0;
-    m_logSyncCount = 0;
+	printf( "  " );
+	for (int i=0; i<m_logCount; ++i) printf( "%02X ", m_logBuffer[i] );
+	printf( " : %d bytes\n", m_logCount );
+	m_logCount = 0;
+	m_logSyncCount = 0;
   }
 }
 
@@ -566,79 +566,79 @@ void DMMClass::setRange( int index )
   double counts = m_numCounts;
   double scale = 1.0;
   int pos = 0;
-  
+
   int stop = 0;
   if (m_value[index][0] == '-') stop++;
-  for (int i=m_value[index].size(), cnt=0; i>=stop; --i, ++cnt) 
+  for (int i=m_value[index].size(), cnt=0; i>=stop; --i, ++cnt)
   {
-    if (m_value[index][i] == '.') 
-    {
-      pos = cnt-1;
-      break;
-    }
+	if (m_value[index][i] == '.')
+	{
+	  pos = cnt-1;
+	  break;
+	}
   }
-  
+
   //printf( "counts=%g pos=%d value=(%s)\n", counts, pos, m_value[index].c_str() );
-  
+
   for (int i=0; i<pos; ++i) scale *= 10.0;
   counts /= scale;
-  
+
   if (m_mode[index] == "AC")
   {
-    if (m_unit[index] == "V")
-    {
-      if (m_prefix[index] == "" && counts > m_maxACV) counts = m_maxACV;
-    }
-    else
-    {
-      if (m_prefix[index] == "" && counts > m_maxACA) counts = m_maxACA;
-    }
-    m_rangeMin[index] = 0;
+	if (m_unit[index] == "V")
+	{
+	  if (m_prefix[index] == "" && counts > m_maxACV) counts = m_maxACV;
+	}
+	else
+	{
+	  if (m_prefix[index] == "" && counts > m_maxACA) counts = m_maxACA;
+	}
+	m_rangeMin[index] = 0;
   }
   else if (m_mode[index] == "DC")
   {
-    if (m_unit[index] == "V")
-    {
-      if (m_prefix[index] == "" && counts > m_maxDCV) counts = m_maxDCV;
-    }
-    else
-    {
-      if (m_prefix[index] == "" && counts > m_maxDCA) counts = m_maxDCA;
-    }
+	if (m_unit[index] == "V")
+	{
+	  if (m_prefix[index] == "" && counts > m_maxDCV) counts = m_maxDCV;
+	}
+	else
+	{
+	  if (m_prefix[index] == "" && counts > m_maxDCA) counts = m_maxDCA;
+	}
   }
   else if (m_mode[index] == "TE")
   {
-    if (m_unit[index] == "C") counts = m_maxTemp;
-    else                      counts = 2*m_maxTemp;
+	if (m_unit[index] == "C") counts = m_maxTemp;
+	else                      counts = 2*m_maxTemp;
   }
   else if (m_mode[index] == "DU")
   {
-    counts = 100;
+	counts = 100;
   }
-  
+
   // Some DMM have full scale frequency display
   //
   if (m_mode[index] == "FR" && m_freqFullScale)
   {
-    int pot=1;
-    
-    while (counts>pot) pot *= 10;
-    counts = pot;
+	int pot=1;
+
+	while (counts>pot) pot *= 10;
+	counts = pot;
   }
 
   m_rangeMax[index] = counts;
-  
-  if (m_mode[index] == "FR" || 
-      m_mode[index] == "AC" || 
-      m_mode[index] == "CA" || 
-      m_mode[index] == "DI" || 
-      m_mode[index] == "OH" || 
-      m_mode[index] == "" ||   // hFE? 
-      m_mode[index] == "DU")
+
+  if (m_mode[index] == "FR" ||
+	  m_mode[index] == "AC" ||
+	  m_mode[index] == "CA" ||
+	  m_mode[index] == "DI" ||
+	  m_mode[index] == "OH" ||
+	  m_mode[index] == "" ||   // hFE?
+	  m_mode[index] == "DU")
   {
-    m_rangeMin[index] = 0;
+	m_rangeMin[index] = 0;
   }
   else m_rangeMin[index] = -counts;
-  
+
   if (m_mode[index] == "TE") m_rangeMin[index] = m_minTemp;
 }

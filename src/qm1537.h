@@ -9,9 +9,9 @@
 // License  version 2.0 as published   by the Free Software  Foundation
 // and appearing  in the file LICENSE.GPL included  in the packaging of
 // this file.
-// 
-// This file is provided AS IS with  NO WARRANTY OF ANY KIND, INCLUDING 
-// THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+//
+// This file is provided AS IS with  NO WARRANTY OF ANY KIND, INCLUDING
+// THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR
 // PURPOSE.
 //----------------------------------------------------------------------
 // Copyright 2007 Matthias Toussaint
@@ -20,8 +20,8 @@
 #ifndef QM1537_HH
 #define QM1537_HH
 
-#include <dmmclass.h>
-#include <serialport.h>
+#include "dmmclass.h"
+#include "serialport.h"
 
 /**
   Digitech QM-1537 serial protocol
@@ -48,7 +48,7 @@
   <tr><td>Byte 12</td><td>0x00</td></tr>
   <tr><td>Byte 13</td><td>0x0D</td></tr>
   </table>
-            
+
   Remark: <i>;0:; as value (digits 1-4) indicates OL</i><p>
 
   <table>
@@ -158,21 +158,21 @@ class QM1537 : public DMMClass
   public:
   /** \brief Constructor
    */
-    QM1537();
-    virtual ~QM1537();
-  
-    virtual Port::Error close();
-  
-    static DMMClass *create() { return new QM1537; }
-  
+	QM1537();
+	virtual ~QM1537();
+
+	virtual Port::Error close();
+
+	static DMMClass *create() { return new QM1537; }
+
   protected:
-    SerialPort  m_port;
-  
-    virtual Port::Error open_impl( const std::string & config );
-    virtual void run();
-  
-    int readData( unsigned char *buffer );
-  
+	SerialPort  m_port;
+
+	virtual Port::Error open_impl( const std::string & config );
+	virtual void run();
+
+	int readData( unsigned char *buffer );
+
 };
 
 #endif // QM1537_HH

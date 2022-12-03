@@ -9,15 +9,15 @@
 // License  version 2.0 as published   by the Free Software  Foundation
 // and appearing  in the file LICENSE.GPL included  in the packaging of
 // this file.
-// 
-// This file is provided AS IS with  NO WARRANTY OF ANY KIND, INCLUDING 
-// THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+//
+// This file is provided AS IS with  NO WARRANTY OF ANY KIND, INCLUDING
+// THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR
 // PURPOSE.
 //----------------------------------------------------------------------
 // Copyright 2006 Matthias Toussaint
 //======================================================================
 
-#include <logger.h>
+#include "logger.h"
 
 #include <iostream>
 
@@ -44,13 +44,13 @@ Port::Error Logger::close()
 void Logger::run()
 {
   unsigned char buffer[64];
-  
+
   while (m_run)
   {
-    int cnt = readData( &m_port, buffer, 0, 1, 63, 1 );
-    
-    m_mutex.lock();
-    m_hasValue = true;
-    m_mutex.unlock();
+	int cnt = readData( &m_port, buffer, 0, 1, 63, 1 );
+
+	m_mutex.lock();
+	m_hasValue = true;
+	m_mutex.unlock();
   }
 }

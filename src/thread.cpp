@@ -9,15 +9,15 @@
 // License  version 2.0 as published   by the Free Software  Foundation
 // and appearing  in the file LICENSE.GPL included  in the packaging of
 // this file.
-// 
-// This file is provided AS IS with  NO WARRANTY OF ANY KIND, INCLUDING 
-// THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+//
+// This file is provided AS IS with  NO WARRANTY OF ANY KIND, INCLUDING
+// THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR
 // PURPOSE.
 //----------------------------------------------------------------------
 // Copyright 2006 Matthias Toussaint
 //======================================================================
 
-#include <thread.h>
+#include "thread.h"
 
 #include <stdio.h>
 
@@ -37,9 +37,9 @@ DWORD WINAPI Thread::start_thread( void *ptr )
 #endif
 {
   Thread *thread = (Thread *)ptr;
-  
+
   thread->run();
-  
+
 #ifndef __WIN32
   return ptr;
 #else
@@ -57,11 +57,11 @@ int Thread::start()
   return ::pthread_create( &m_pthread, &attrs, Thread::start_thread, this );
 #else
   m_handle = CreateThread( 0, // Security attributes
-                           0, // Stack size
-                           start_thread, // pFun,
-                           this, // pArg,
-                           0,
-                           &m_tid );
+						   0, // Stack size
+						   start_thread, // pFun,
+						   this, // pArg,
+						   0,
+						   &m_tid );
 
 
   return 0;
